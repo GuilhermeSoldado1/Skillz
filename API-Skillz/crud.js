@@ -6,22 +6,7 @@ function registarDados(){
     let campo3 = $("#campo3").val()
     let campo4 = $("#campo4").val()
 
-    $.ajax({
-        url: url + '/campo',
-        method: 'POST',
-        contentType: "application/json",
-        data: JSON.stringify({ campo1, campo2, campo3, campo4 }),
-
-        success: function(dados){
-            alert('Sucesso')
-            $("#formCreate")[0].reset()
-            getTabela()
-        },
-
-        error: function (erro){
-            alert('Não foi possível registar')
-        }
-    })
+    console.log(campo3)
 }
 
 function getTabela(){
@@ -49,6 +34,22 @@ function getTabela(){
             alert('Dados não foram possíveis de carregar')
         }
     })
+}
+
+function abrirModal(){
+    Swal.fire({
+    title: "Are you sure?",
+    text: "You won't be able to revert this!",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#3085d6",
+    cancelButtonColor: "#d33",
+    confirmButtonText: "Yes, delete it!"
+    }).then((result) => {
+    if (result.isConfirmed){
+        console.log('yo!')
+    };
+    });
 }
 
 function editarCampo(id){

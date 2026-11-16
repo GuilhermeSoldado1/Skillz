@@ -49,12 +49,13 @@ function getErros(){
 function teste() {
     isLogado(function(logado) {
         if (logado) {
-            alert("Estás logado!");
+
         } else {
-            alert("Não estás logado!");
+
         }
     });
 }
+
 
 
 
@@ -88,5 +89,5 @@ function getModal(){
 
 $(function(){
     getSelectAutores()
-    teste()
+    teste2()
 })

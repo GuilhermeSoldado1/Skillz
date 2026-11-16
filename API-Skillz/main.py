@@ -128,7 +128,7 @@ def post_livro(dados: LivroIn):
     where livro.id = autoreslivros.livro_id and autor.id = autoreslivros.autor_id and
     livro.id = %s """, (livro_id,))
 
-    res = cursor.fetchone()
+    res = cursor.fetchall()
 
     cursor.close()
     conn.close()

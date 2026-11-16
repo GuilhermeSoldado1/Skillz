@@ -22,6 +22,7 @@ class LivroIn(BaseModel):
     isbn: str
     estado: int
     qtd: int
+    autores: list[int]
 
 class LivroOut(LivroIn):
     id: int
@@ -29,7 +30,6 @@ class LivroOut(LivroIn):
 class Livro_AutoresOut(BaseModel):
     autor_nome: str
     livro_titulo: str
-
 
 
 class AutorIn(BaseModel):

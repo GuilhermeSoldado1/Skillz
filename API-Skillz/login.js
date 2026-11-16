@@ -10,13 +10,14 @@ function login(){
         contentType: "application/json",
         data: JSON.stringify({ nome, password }),
         success: function (dados) {
-            if (dados){
-                alert('Bem vindo')
-            }
+            alert('Bem vindo')
+            window.location.href = 'crud.html'
         },
 
-        error: function (erro){
-            alert('Dados não foram possíveis de carregar')
+        error: function (xhr){
+            if (xhr.status === 404){
+                alert(xhr.responseJSON.detail)
+            }
         }
     })
 }
