@@ -1,6 +1,9 @@
 from pydantic import BaseModel
 from datetime import *
 
+class LoginIn(BaseModel):
+    nome: str
+    password: str
 
 class LivroIn(BaseModel):
     titulo: str
@@ -15,7 +18,6 @@ class LivroIn(BaseModel):
     isbn: str
     estado: int
     qtd: int
-    autor_id: int
 
 class LivroOut(LivroIn):
     id: int

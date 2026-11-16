@@ -57,6 +57,30 @@ async def erro_validacao_response(request, exc):
         }
     )
 
+#LOGIN
+
+utilizador_logado = {
+    nome : '',
+    tipo : ''
+}
+
+@app.post("/login")
+def login(dados: LoginIn):
+    conn = get_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    cursor.execute('Select * from utilizador where nome = %s and password = md5(%s)', (dados.nome, dados.password))
+
+    dados = cursor.fetchone()
+
+    if not dados:
+        raise HTTPException(status_code=404, detail="Dados de acesso inválidos")
+
+    cursor.close()
+    conn.close()
+
+    return None
+
 #CRUD - LIVROS
 
 @app.get("/livros", response_model=list[LivroOut])
@@ -67,6 +91,9 @@ def listar_livros():
     cursor.execute('SELECT * FROM livro')
 
     dados = cursor.fetchall()
+
+    if not dados:
+        raise HTTPException(status_code=404, detail="Livro não encontrado")
 
     cursor.close()
     conn.close()
@@ -163,7 +190,7 @@ def apagar_livro(livro_id: int):
     return None
 
 
-@app.get('/livro_autores/{livro_id}', response_model=Livro_AutoresOut)
+@app.get('/livro_autores/{livro_id}', response_model=list[Livro_AutoresOut])
 def livro_dos_autores(livro_id: int):
 
     conn = get_connection()
@@ -177,10 +204,10 @@ def livro_dos_autores(livro_id: int):
         and livro.id = {livro_id}""")
 
     res = cursor.fetchall()
-    
+
     cursor.close()
     conn.close()
-    
+
     return res
 
 
