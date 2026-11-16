@@ -1,4 +1,4 @@
-const url = "http://172.1.1.68:8000"
+url = "http://192.168.1.76:8000"
 
 function getSelectAutores() {
     $.ajax({
@@ -21,6 +21,42 @@ function getSelectAutores() {
         }
     });
 }
+
+function getErros(){
+    $.ajax({
+        url: url + "/livros/" + livroId,
+        method: "GET",
+        success: function(dados) {
+            // Usa os dados normalmente
+        },
+        error: function(xhr) {
+            // 1. Lê o código do erro (ex: 401, 404, 500)
+            console.log("Código:", xhr.status);
+
+            // 2. Lê a mensagem do 'detail' que enviaste do Python
+            let mensagem = xhr.responseJSON ? xhr.responseJSON.detail : "Erro inesperado no servidor.";
+            
+            alert(mensagem); // Vai mostrar: "Precisas de iniciar sessão."
+
+            // Se for erro de sessão (401), podes redirecionar logo
+            if (xhr.status === 401) {
+                window.location.href = "index.html";
+            }
+        }
+    });
+}
+
+function teste() {
+    isLogado(function(logado) {
+        if (logado) {
+            alert("Estás logado!");
+        } else {
+            alert("Não estás logado!");
+        }
+    });
+}
+
+
 
 
 function getModal(){
@@ -49,28 +85,8 @@ function getModal(){
     
 }
 
-function login(){
-    let nome = $('#nome').val()
-    let password = $('#pass').val()
-
-    $.ajax({
-        url: url + `/login`,
-        method: "POST",
-        contentType: "application/json",
-        data: JSON.stringify({ nome, password }),
-        success: function (dados) {
-            if (dados){
-                alert('Bem vindo')
-            }
-        },
-
-        error: function (erro){
-            alert('Dados não foram possíveis de carregar')
-        }
-    })
-}
-
 
 $(function(){
     getSelectAutores()
+    teste()
 })

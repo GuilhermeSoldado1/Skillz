@@ -5,6 +5,10 @@ class LoginIn(BaseModel):
     nome: str
     password: str
 
+class LoginOut(BaseModel):
+    nome: str
+    tipo: str
+
 class LivroIn(BaseModel):
     titulo: str
     dataLancamento: date

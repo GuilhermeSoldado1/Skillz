@@ -19,67 +19,53 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Erros de validação dos dados recebidos pela API (POST, PUT, etc.)
-@app.exception_handler(RequestValidationError)
-async def erro_validacao_request(request, exc):
-    erros = []
-
-    for erro in exc.errors():
-        campo = erro['loc'][-1]
-        mensagem = erro['msg']
-
-        erros.append(f"{campo}: {mensagem}")
-
-    return JSONResponse(
-        status_code=422,
-        content={
-            "erro": "Dados inválidos",
-            "detalhes": erros
-        }
-    )
-
-# Erros de validação dos dados devolvidos pela API (response_model)
-@app.exception_handler(ResponseValidationError)
-async def erro_validacao_response(request, exc):
-    erros = []
-
-    for erro in exc.errors():
-        campo = erro['loc'][-1]
-        mensagem = erro['msg']
-
-        erros.append(f"{campo}: {mensagem}")
-
-    return JSONResponse(
-        status_code=500,
-        content={
-            "erro": "Erro na resposta da API",
-            "detalhes": erros
-        }
-    )
-
-#LOGIN
-
 utilizador_logado = {
-    nome : '',
-    tipo : ''
+    'nome' : '',
+    'tipo' : ''
 }
 
-@app.post("/login")
+@app.get("/login/tipo")
+def user_tipo():
+    return utilizador_logado['tipo']
+
+
+@app.get("/login/is_logado")
+def is_logado():
+    if len(utilizador_logado['nome']) > 0:
+        return True
+    else:
+        return False 
+
+
+@app.get("/login/logout")
+def lougout():
+    utilizador_logado['nome'] = ''
+    utilizador_logado['tipo'] = ''
+
+#LOGIN
+@app.post("/login/logar")
 def login(dados: LoginIn):
     conn = get_connection()
     cursor = conn.cursor(dictionary=True)
 
     cursor.execute('Select * from utilizador where nome = %s and password = md5(%s)', (dados.nome, dados.password))
 
-    dados = cursor.fetchone()
+    res = cursor.fetchone()
 
-    if not dados:
+    cursor.close()
+    conn.close()
+
+    if not res:
         raise HTTPException(status_code=404, detail="Dados de acesso inválidos")
+
+    utilizador_logado['nome'] = res['nome']
+    utilizador_logado['tipo'] = res['tipo']
 
     cursor.close()
     conn.close()
 
     return None
+
 
 #CRUD - LIVROS
 
@@ -102,6 +88,10 @@ def listar_livros():
 
 @app.get('/livros/{livro_id}', response_model=LivroOut)
 def obter_livro(livro_id: int):
+
+    if not is_logado():
+        raise HTTPException(status_code=401, detail="Precisas de iniciar sessão.")
+    
     conn = get_connection()
     cursor = conn.cursor(dictionary=True)
 

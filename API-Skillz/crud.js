@@ -1,4 +1,4 @@
-const url = 'url'
+
 
 function registarDados(){
     let campo1 = $("#campo1").val()
@@ -107,11 +107,12 @@ function guardarEdicao(id, campos){
 
 
 $(function () {
+    isLogado(function(logado) {
+        if (!logado) {
+            window.location.href = "index.html"
+        } 
+    });
     renderNavbar()
     getTabela()
-
-    $("#formCreate").on("submit", function(e){
-        e.preventDefault()
-        registarDados()
-    })
+    
 })
