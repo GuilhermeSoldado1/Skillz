@@ -20,6 +20,11 @@ class LivroIn(BaseModel):
 class LivroOut(LivroIn):
     id: int
 
+class Livro_AutoresOut(BaseModel):
+    autor_nome: str
+    livro_titulo: str
+
+
 
 class AutorIn(BaseModel):
     nome: str

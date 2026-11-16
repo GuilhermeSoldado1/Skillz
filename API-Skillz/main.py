@@ -8,6 +8,7 @@ from schemas import LivroIn
 from database import get_connection
 from schemas import *
 
+
 app = FastAPI(title="API Módulo 3")
 
 app.add_middleware(
@@ -160,6 +161,27 @@ def apagar_livro(livro_id: int):
     conn.close()
 
     return None
+
+
+@app.get('/livro_autores/{livro_id}', response_model=Livro_AutoresOut)
+def livro_dos_autores(livro_id: int):
+
+    conn = get_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    cursor.execute(f"""
+        select autor.nome as autor_nome, livro.titulo as livro_titulo
+        from autor, livro, autoreslivros
+        where autoreslivros.livro_id = livro.id
+        and autoreslivros.autor_id = autor.id
+        and livro.id = {livro_id}""")
+
+    res = cursor.fetchall()
+    
+    cursor.close()
+    conn.close()
+    
+    return res
 
 
 # CRUD AUTORES
@@ -595,6 +617,8 @@ def apagar_requisitacao(requisitacao_id: int):
     conn.close()
 
     return None
+
+
 
 
 
